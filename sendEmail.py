@@ -32,7 +32,7 @@ def sendEmail(login = None, mail = None, port = 465):
     smtp = smtplib.SMTP_SSL()
 
     # 默认的端口为 465
-    smtp.connect(smtpserver, prot)
+    smtp.connect(smtpserver, port)
     smtp.login(username, password)
     smtp.sendmail(From, To, msg.as_string())
     smtp.quit()
@@ -40,17 +40,19 @@ def sendEmail(login = None, mail = None, port = 465):
 if __name__ == "__main__":
     login = {
         "smtpserver": "smtp.qq.com",
-        "username": "myqqnumber@qq.com",
-        "password": "mypassword"
+        "username": "xxxx@qq.com",
+        "password": "********"
     }
 
-    group = "group.txt"
+    group   = "group.txt"
+    content = "content.txt"
+    text = open(content).read()
     mail = {
         "emailType": "html",
         "from": None,
         "to": None,
         "subject": "邮件主题",
-        "content": "内容",
+        "content": None,
         "attachment": "附件路径"
     }
 
@@ -60,7 +62,9 @@ if __name__ == "__main__":
             name, email, attc = receiver[0].strip(), receiver[1].strip(), receiver[2].strip()
             mail["from"] = login["username"]
             mail["to"]   = email
-            mail["content"] = name
+            cnt = text.replace("$name$", name)
+            cnt = cnt.replace("$subject$", mail["subject"])
+            mail["content"] = cnt
             mail["attachment"] = attc
 
             sendEmail(login, mail)
