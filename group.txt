@@ -1,0 +1,2 @@
+小红, xiaohong@xxxx.com, ./attachment/小红.txt
+小明, xiaoming@xxxx.com, ./attachment/小明.txt
