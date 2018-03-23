@@ -40,8 +40,8 @@ def sendEmail(login = None, mail = None, port = 465):
 if __name__ == "__main__":
     login = {
         "smtpserver": "smtp.qq.com",
-        "username": "icgw@qq.com",
-        "password": "afqpioyppbytdhbi"
+        "username": "myqqnumber@qq.com",
+        "password": "mypassword"
     }
 
     group = "group.txt"
