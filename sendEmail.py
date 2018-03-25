@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
+# 使用 ssl 加密连接时的端口 465 或 994
 def sendEmail(login = None, mail = None, port = 465):
     smtpserver = login["smtpserver"]
     username   = login["username"]
@@ -29,31 +30,40 @@ def sendEmail(login = None, mail = None, port = 465):
     part.add_header("Content-Disposition", "attachment", filename = Attachment.split("/")[-1])
     msg.attach(part)
 
-    smtp = smtplib.SMTP_SSL()
+    try:
+        smtp = smtplib.SMTP_SSL()
 
-    # 默认的端口为 465
-    smtp.connect(smtpserver, port)
-    smtp.login(username, password)
-    smtp.sendmail(From, To, msg.as_string())
+        # 默认的端口为 465
+        smtp.connect(smtpserver, port)
+        smtp.login(username, password)
+        smtp.sendmail(From, To, msg.as_string())
+        print(To + "\t 邮件发送成功 (Sent successfully)")
+    except smtplib.SMTPException:
+        print("Error: 无法发送邮件")
     smtp.quit()
 
 if __name__ == "__main__":
-    login = {
-        "smtpserver": "smtp.qq.com",
-        "username": "xxxx@qq.com",
-        "password": "********"
-    }
+    login = {}
 
-    group   = "group.txt"
-    content = "content.txt"
+    # 在这里设置 SMTP 服务器地址
+    login["smtpserver"] = "mail.cstnet.cn"
+    login["username"]   = input("请输入登陆邮箱地址：")
+    login["password"]   = input("请输入密码：")
+
+    group     = "group.txt"
+    content   = "content.txt"
+    attachDir = "./attachment/"
+    
     text = open(content).read()
     mail = {
         "emailType": "html",
         "from": None,
         "to": None,
-        "subject": "邮件主题",
+        
+        # 在这里设置统一的邮件主题
+        "subject": "关于核对完善国科大院士指导教师信息的通知",
         "content": None,
-        "attachment": "附件路径"
+        "attachment": None
     }
 
     with open(group) as f:
@@ -63,9 +73,9 @@ if __name__ == "__main__":
             mail["from"] = login["username"]
             mail["to"]   = email
             cnt = text.replace("$name$", name)
-            cnt = cnt.replace("$subject$", mail["subject"])
+            cnt = cnt.replace("$email$", "icgw@outlook.com")
             mail["content"] = cnt
-            mail["attachment"] = attc
-
+            mail["attachment"] = attachDir + attc
+            
+            # 这里默认的端口 465，可以在第三个参数上自定义
             sendEmail(login, mail)
-            print(receiver[1], "发送成功 (Successful sending)")
